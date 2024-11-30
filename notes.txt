@@ -1,0 +1,15 @@
+npm i next-themes
+npm i shadcn@latest add button dropdown-menu
+
+npm i -D prisma
+npm i @prisma/client
+npx prisma init
+npx prisma migrate dev --name init  
+npx prisma generate //after creating the models    (We need to stop our server to run this)
+npx prisma db push
+npx prisma studio // runs on loaclhost:5555
+npm install next-auth @next-auth/prisma-adapter
+
+we have to configure the image in the next.config.js to show the cloudinary image using next/image in UI
+
+The useForm hook is defined after this return statement. If the isMounted condition is false, the useForm hook will not be executed, leading to a change in the order of hooks between renders.
