@@ -3,13 +3,17 @@
 import { motion } from "framer-motion";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {z} from "zod";
 import { useRouter } from "next/navigation";
 
 export const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters long"),
+  email: z.string().trim()
+          .min(1, { message: 'Email required!' })
+          .email("Invalid email address"),
+  password: z.string().trim()
+          .min(1, { message: 'Password required!' })
+          .min(8, "Password must be at least 8 characters long"),
 })
 
 export default function SignInPage() {
@@ -18,9 +22,10 @@ export default function SignInPage() {
   const[isMounted,setIsMounted] = useState(false);
   const router = useRouter();
 
-  if(!isMounted){
-    return null;
-  }
+  useEffect(() => {
+    setIsMounted(true); // Set to true after component is mounted
+  }, []);
+
   const handleChange = (e:React.ChangeEvent<HTMLInputElement>) =>{
     setFormData({...formData,[e.target.name]:e.target.value});
   }
@@ -60,6 +65,10 @@ const handleLogin = async (e: React.FormEvent) => {
       }
     }
   };
+
+  if (!isMounted) {
+    return null; // Return nothing until the component is mounted
+  }
   return (
     <div className="flex min-h-screen items-center justify-center bg-discord-dark text-white">
       <motion.div
@@ -109,7 +118,7 @@ const handleLogin = async (e: React.FormEvent) => {
         </form>
         <p className="text-sm text-center mt-4">
           Don't have an account?
-          <Link href="/auth/signup" className="text-discord-primary hover:underline">
+          <Link href="/signup" className="text-discord-primary hover:underline">
             Sign Up
           </Link>
         </p>

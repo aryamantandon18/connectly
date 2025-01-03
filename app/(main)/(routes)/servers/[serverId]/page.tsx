@@ -22,11 +22,23 @@ const ServerIdPage: React.FC<ServerIdPageProps> = async ({
         },
       },
     },
+    include: {
+      channels:{
+        where:{
+          name: "general",
+        },
+        orderBy: {
+          createdAt: "asc",
+        }
+      }
+    },
   })
 
-  return (
-    <div>Server Id Page</div>
-  )
-}
+  const initialChannel = server?.channels?.[0];
+  if(initialChannel?.name !== "general") return null;
+
+  return redirect(`/servers/${serverId}/channels/${initialChannel.id}`);
+
+};
 
 export default ServerIdPage 

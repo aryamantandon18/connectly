@@ -52,17 +52,15 @@ const formSchema = z.object({
 });
 
 const CreateChannelModal = () => {
-  const {type, data } = useAppSelector(state => state.modal);
+  const {type, data, isOpen } = useAppSelector(state => state.modal);
   const dispatch = useDispatch();
 
   const { channelType } = data;
-
   
-
   const routes = useRouter();
   const params = useParams();
 
-  const isModalOpen = openModal && type === "createChannel";
+  const isModalOpen = isOpen && type === "createChannel";
 
   const form = useForm({
     resolver: zodResolver(formSchema),

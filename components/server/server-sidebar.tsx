@@ -144,7 +144,7 @@ export const ServerSidebar = async({serverId}:ServerSidebarProps)=>{
   
           {!!audioChannels?.length && (
             <div className="mb-2">
-              <ServerSectio
+              <ServerSection
                 sectionType="channels"
                 channelType={ChannelType.AUDIO}
                 role={role}

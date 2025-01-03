@@ -14,8 +14,10 @@ export default function AuthLoader({children}:{children:React.ReactNode}){
             dispatch(setUser({
                 id:session.user.id,
                 email:session.user.email,
-                name:session.user.name,
-                image:session.user.image,
+                profile:{
+                    name:session.user.profile.name,
+                    image:session.user.profile.image,
+                }
             }))
         }
     },[status, session, dispatch]);

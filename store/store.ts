@@ -13,6 +13,13 @@ const reducers = {
 // Configure store
 export const store = configureStore({
   reducer: reducers,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredPaths: ["modal.data.server"], // Ignore the specific path
+        ignoredActions: ["modal/openModal"], // Ignore the specific action
+      },
+    }),
 });
 
 

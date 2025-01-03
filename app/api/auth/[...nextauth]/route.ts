@@ -1,10 +1,10 @@
 import NextAuth,{ NextAuthOptions, Session } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
-import CredentialsProvider from 'next-auth/providers/credentials'
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db } from "@/lib/db";
 import { JWT } from "next-auth/jwt";
-import bcryptjs from 'bcryptjs'
+import bcryptjs from 'bcryptjs';
 import { User } from "next-auth";
 
 
@@ -19,16 +19,16 @@ export const authOptions:NextAuthOptions = {
       name: 'Credentials',
       credentials: {
         email: { label: "Email", type: "email", placeholder: "test@example.com" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
       },
-      async authorize(credentials): Promise<User | null>  {
+      async authorize(credentials): Promise<User | null> {
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Invalid credentials");
         }
 
         const user = await db.user.findUnique({ where: { email: credentials.email } });
         
-        if (!user || !user.password) {
+        if (!user || !user.password){
           throw new Error("Invalid email or password");
         }
 
@@ -48,8 +48,6 @@ export const authOptions:NextAuthOptions = {
         return {
           id: user.id,
           email: user.email!,
-          name: user.name || "",
-          image: user.image || "",
         } as User; // Explicitly cast as User to ensure TypeScript compatibility.
       }
     })  
@@ -70,8 +68,10 @@ export const authOptions:NextAuthOptions = {
       if (token) {
         session.user.id = token.id || ""; // Ensure id is set
         session.user.email = token.email || "";
-        session.user.name = token.name || "";
-        session.user.image = token.image || "";
+        session.user.profile = {
+          name: token.profile?.name || "",
+          image: token.profile?.image || "",
+        };
       }
       return session;
     },
@@ -79,9 +79,20 @@ export const authOptions:NextAuthOptions = {
       if (user) {
         token.id = user.id
         token.email = user.email;
-        token.name = user.name;
-        token.image = user.image;
+
+       // Fetch profile details from your database if needed
+       const userProfile = await db.profile.findUnique({
+        where: { userId: user.id },
+       });
+
+        token.profile = {
+          name: userProfile?.name || "",
+          image: userProfile?.image || "",
+        };
         token.accessToken = account.access_token
+      }
+      else if(account){
+        account.access_token = undefined;
       }
       return token;
     },

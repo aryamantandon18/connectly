@@ -5,10 +5,12 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { cn } from "@/lib/utils";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import AuthLoader from "@/components/providers/AuthLoader";
-import {ReduxProvider} from "@/store/ReduxProvider";
+import { ReduxProvider } from "@/store/ReduxProvider";
 import { AuthWrapper } from "@/components/providers/SessionProvider";
 import { getServerSession } from "next-auth";
 import { ModalProvider } from "@/components/providers/modal-provider";
+import { SocketProvider } from "@/components/providers/socket-provider";
+import { QueryProvider } from "@/components/providers/query-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,27 +33,31 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   const session = await getServerSession(authOptions); // Fetch session on server
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${cn(`${geistSans.variable} ${geistMono.variable} antialiased`,"bg-white dark:bg-[#313338]")}`}
+        className={`${cn(
+          `${geistSans.variable} ${geistMono.variable} antialiased`,
+          "bg-white dark:bg-[#313338]"
+        )}`}
       >
         <ReduxProvider>
-        <ThemeProvider
-        attribute="class"
-        defaultTheme="dark"
-        enableSystem={false}
-        storageKey="discord-theme"
-        >
-          <ModalProvider/>
-          <AuthWrapper session={session}>
-            <AuthLoader>
-            {children}
-            </AuthLoader>
-          </AuthWrapper>
-        </ThemeProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem={false}
+            storageKey="discord-theme"
+          >
+            <SocketProvider>
+              <ModalProvider />
+              <AuthWrapper session={session}>
+                <AuthLoader>
+                <QueryProvider>{children}</QueryProvider>
+                </AuthLoader>
+              </AuthWrapper>
+            </SocketProvider>
+          </ThemeProvider>
         </ReduxProvider>
       </body>
     </html>

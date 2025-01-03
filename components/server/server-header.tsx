@@ -26,7 +26,7 @@ interface ServerHeaderProps {
   role?: MemberRole;
 }
 
-const ServerHeader: React.FC<ServerHeaderProps> = ({ server, role }) => {
+const ServerHeader = ({ server, role }:ServerHeaderProps) => {
     const dispatch = useDispatch();
   const isAdmin = role === MemberRole.ADMIN;
   const isModerator = isAdmin || role === MemberRole.MODERATOR;

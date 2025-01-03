@@ -4,8 +4,10 @@ interface AuthState {
     user:{
         id: string;
         email:string;
-        name:string;
-        image?:string;
+        profile:{
+            name?:string;
+            image?:string;
+        }
     } | null
     loading: boolean;
 }

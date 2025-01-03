@@ -13,3 +13,8 @@ npm install next-auth @next-auth/prisma-adapter
 we have to configure the image in the next.config.js to show the cloudinary image using next/image in UI
 
 The useForm hook is defined after this return statement. If the isMounted condition is false, the useForm hook will not be executed, leading to a change in the order of hooks between renders.
+
+everytime if we do any changes in our prisma schema , then run these 3 commands
+npx prisma migrate reset  // to remove entire db
+npx prisma generate  // when the server is stopped
+npx prisma db push  // this will remove all the existing data from db

@@ -10,7 +10,7 @@ import { ModeToggle } from "../mode-toggle";
 import { UserAvatar } from "./UserAvatar";
 
 export const NavigationSidebar = async() =>{
-    const profile = currentProfile();
+    const profile = await currentProfile();
     if(!profile){
         return redirect("/");
     }

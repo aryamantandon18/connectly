@@ -24,7 +24,7 @@ export type ModalType =
 
 interface ModalState {
     type: ModalType | null;
-    data: ModalData;
+    data: ModalData ;
     isOpen: boolean;
   }
   
@@ -38,13 +38,16 @@ const modalSlice = createSlice({
     name:"modal",
     initialState,   
     reducers: {
-        openModal: (state,action:PayloadAction<{ type: ModalType;data?:ModalData }>)=>{
-            state.type = action.payload.type;
+        openModal: (state:ModalState,action:PayloadAction<{ type: ModalType;data?:ModalData }>)=>{
+          const { type, data = {} } = action.payload;   // Default `data` to {}
+            state.type = type;
             state.isOpen = true;
+            state.data = data;
         },
-        closeModal: (state) => {
+        closeModal: (state:ModalState) => {
             state.type = null;
             state.isOpen = false;
+            state.data={};
         }
     }
 })
