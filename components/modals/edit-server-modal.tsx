@@ -32,6 +32,7 @@ import { IoCloseCircle } from 'react-icons/io5';
 import { useAppSelector } from "@/store/store";
 import { useDispatch } from "react-redux";
 import { closeModal } from "@/store/slices/modalSlice";
+import Image from "next/image";
 
 const formSchema = z.object({
   name: z
@@ -107,7 +108,7 @@ const EditServerModal = () => {
                     <div>
                       {field.value ? (
                         <div className="relative w-[50%] h-[50%] m-auto mt-3">
-                        <img
+                        <Image
                           src={preview? preview : field.value}
                           alt="Selected preview"
                           className="object-cover rounded-lg "

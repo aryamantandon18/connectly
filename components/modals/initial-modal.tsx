@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react'
 import { FaCloudUploadAlt } from 'react-icons/fa' 
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Server name is required" }),
@@ -81,7 +82,7 @@ export const InitialModal = () =>{
         render={({ field }) => (
           <div className="flex flex-col items-center justify-center w-[50%] h-[120px] md:h-[240px] bg-gray-200 border-2 border-dashed border-gray-400 rounded-md">
           {preview ? (
-            <img
+            <Image
               src={preview}
               alt="Selected preview"
               className="object-cover w-full h-full rounded-md"

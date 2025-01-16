@@ -30,6 +30,7 @@ import { useDispatch } from "react-redux";
 import { closeModal } from "@/store/slices/modalSlice";
 import { X } from "lucide-react";
 import { IoCloseCircle } from "react-icons/io5";
+import Image from "next/image";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Server name is required" }),
@@ -117,7 +118,7 @@ export const CreateServerModal = () => {
                     <div>
                       {preview ? (
                         <div className="relative w-[50%] h-[50%] m-auto mt-3">
-                        <img
+                        <Image
                           src={preview}
                           alt="Selected preview"
                           className="object-cover rounded-lg w-[272px] h-[233px] mx-auto"

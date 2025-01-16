@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Form, FormField } from "@/components/ui/form";
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import { IoCloseCircle } from "react-icons/io5";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { FileIcon } from "lucide-react";
+import Image from "next/image";
 
 const formSchema = z.object({
   fileUrl: z.string().min(1, "Attectment is required"),
@@ -104,7 +105,7 @@ const MessageFileModal = () => {
                         <div className="relative w-[50%] h-[50%] m-auto mt-3">
                           {preview.startsWith('blob:')?(
                         <>
-                         <img
+                         <Image
                          src={preview}
                          alt="Selected preview"
                          className="object-cover rounded-lg w-[272px] h-[233px] mx-auto"

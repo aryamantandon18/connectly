@@ -33,7 +33,7 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ChannelType } from "@prisma/client";
 import { useEffect } from "react";
 import { useAppSelector } from "@/store/store";
@@ -57,7 +57,6 @@ const EditChannelModal = () => {
   const { channel, server } = data;
 
   const routes = useRouter();
-  const params = useParams();
 
   const isModalOpen = isOpen && type === "editChannel";
 
