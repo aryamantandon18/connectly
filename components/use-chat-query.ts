@@ -18,7 +18,7 @@ export const useChatQuery = ({
 }: ChatQueryProps) => {
   const { isConnected } = useSocket();
 
-  const fetchMessages = async ({ pageParam = undefined }) => {
+  const fetchMessages = async ({ pageParam = undefined }) => {    // pageParam is our cursor for chat scrolling 
     const url = qs.stringifyUrl(
       {
         url: apiUrl,
@@ -39,7 +39,7 @@ export const useChatQuery = ({
       queryKey: [queryKey],
       queryFn: fetchMessages,
       getNextPageParam: (lastPage) => lastPage?.nextCursor,
-      refetchInterval: isConnected ? false : 1000,
+      refetchInterval: isConnected ? false : 1000,    // for the real time updates
       initialPageParam: undefined,
     });
 

@@ -18,3 +18,9 @@ everytime if we do any changes in our prisma schema , then run these 3 commands
 npx prisma migrate reset  // to remove entire db
 npx prisma generate  // when the server is stopped
 npx prisma db push  // this will remove all the existing data from db
+
+- we use the type ServerWithMembersWithProfile when we need to work with members and therir profiles 
+& use type Server from @prisma/client when we do not want to.
+- ml-auto se element bilkul right m chla jata h 
+- each icon has w-4 h-4 
+- shadCN sheet is used as drawer 

@@ -4,7 +4,7 @@ import { Member, Message, Profile } from "@prisma/client";
 import { ChatWelcome } from "./chat-welcome";
 import { Loader2, ServerCrash } from "lucide-react";
 import { useChatQuery } from "../use-chat-query";
-import { Fragment, useRef, ElementRef } from "react";
+import { Fragment, useRef, ElementRef, useState, useEffect } from "react";
 import { ChatItem } from "./chat-item";
 import { format } from "date-fns";
 import { useChatSocket } from "../use-chat-socket";
@@ -19,14 +19,14 @@ type MessageWithMemberWithProfile = Message & {
 const DATE_FORMAT = "dd/MM/yyyy, HH:mm";
 
 interface ChatMessagesProps {
-  name: string;
-  member: Member;
-  chatId: string;
+  name: string;   // channel.name
+  member: Member;  
+  chatId: string;  //channelId
   apiUrl: string;
   socketUrl: string;
-  socketQuery: Record<string, string>;
+  socketQuery: Record<string, string>;   //the Record<K, T> utility type is used to create an object type with keys of type K and values of type T.
   paramKey: "conversationId" | "channelId";
-  paramValue: string;
+  paramValue: string;         //channel.id
   type: "conversation" | "channel";
 }
 
@@ -47,9 +47,13 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
 
   const chatRef = useRef<ElementRef<"div">>(null);
   const bottomRef = useRef<ElementRef<"div">>(null);
+  const [isMounted,setIsMounted] = useState(false);
 
-  const { data, status, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useChatQuery({
+  useEffect(()=>{
+    setIsMounted(true);
+  })
+
+  const { data, status, fetchNextPage, hasNextPage, isFetchingNextPage } = useChatQuery({
       queryKey,
       apiUrl,
       paramKey,
@@ -70,6 +74,7 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
     count: data?.pages[0]?.items?.length ?? 0,
   });
 
+  
   if (status === "pending") {
     return (
       <div className="flex flex-col flex-1 justify-center items-center">
@@ -80,7 +85,7 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
       </div>
     );
   }
-
+  
   if (status === "error") {
     return (
       <div className="flex flex-col flex-1 justify-center items-center">
@@ -91,7 +96,9 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
       </div>
     );
   }
-
+  
+  if(!isMounted) return null;
+  
   return (
     <div ref={chatRef} className="flex-1 flex flex-col py-4 overflow-y-auto">
       {!hasNextPage && <div className="flex-1" />}

@@ -26,7 +26,10 @@ export const authOptions:NextAuthOptions = {
           throw new Error("Invalid credentials");
         }
 
-        const user = await db.user.findUnique({ where: { email: credentials.email } });
+        const user = await db.user.findUnique({ 
+          where: { email: credentials.email },
+          include: { profile: true }, // Include related profile
+        });
         
         if (!user || !user.password){
           throw new Error("Invalid email or password");
@@ -36,18 +39,17 @@ export const authOptions:NextAuthOptions = {
           credentials.password,
           user.password
         );
-
         if(!passwordMatch){
           throw new Error("Invalid credentials")
         }
-
         // if(!user.emailVerified){
         //   throw new Error("Email not verified")
         // }
-        
         return {
           id: user.id,
           email: user.email!,
+          name: user.profile?.name || "Unknown",
+          image: user.profile?.imageUrl,
         } as User; // Explicitly cast as User to ensure TypeScript compatibility.
       }
     })  
@@ -68,11 +70,10 @@ export const authOptions:NextAuthOptions = {
       if (token) {
         session.user.id = token.id || ""; // Ensure id is set
         session.user.email = token.email || "";
-        session.user.profile = {
-          name: token.profile?.name || "",
-          image: token.profile?.image || "",
-        };
+        session.user.image = token.profile?.imageUrl || "";
+        session.user.name = token.profile?.name || "Unknown";
       }
+
       return session;
     },
     async jwt({ token,account, user }: { token: JWT; account:any ;user?: any }) {
@@ -83,11 +84,14 @@ export const authOptions:NextAuthOptions = {
        // Fetch profile details from your database if needed
        const userProfile = await db.profile.findUnique({
         where: { userId: user.id },
-       });
+       }).catch((err) => {
+        console.error("Failed to fetch user profile:", err);
+        return null;
+      });
 
         token.profile = {
-          name: userProfile?.name || "",
-          image: userProfile?.image || "",
+          name: userProfile?.name || "Unknown",
+          imageUrl: userProfile?.imageUrl || "",
         };
         token.accessToken = account.access_token
       }
@@ -95,6 +99,17 @@ export const authOptions:NextAuthOptions = {
         account.access_token = undefined;
       }
       return token;
+    },
+  },
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax", // Set SameSite explicitly (or 'Strict')
+        path: '/',
+        secure: process.env.NODE_ENV === 'production', // Ensure it's only secure in production
+      },
     },
   },
 };

@@ -77,11 +77,11 @@ model Server {
   imageUrl   String    @db.Text
   inviteCode String    @unique
 
-  members    Member[]
+  members    Member[]   // one to many 
   channels   Channel[]
 
   profileId String
-  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)  // many to one 
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -135,7 +135,7 @@ model Channel {
   messages Message[]
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt 
 
   @@index([profileId])
   @@index([serverId])
@@ -153,8 +153,7 @@ model Message {
   channelId String
   channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
 
-  deleted Boolean @default(false)
-
+  deleted Boolean @default(false)   // when user deleted a msg then we donot delete that msg from db we just set this to true so that we can remove it from UI
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -173,8 +172,8 @@ model Conversation {
 
   directMessages DirectMessage[]
 
-  @@unique([memberOneId, memberTwoId], name: "memberOneId_memberTwoId")
-  @@index([memberTwoId], name: "memberTwoId")
+  @@index([memberTwoId], name: "memberTwoId") 
+  @@unique([memberOneId, memberTwoId], name: "memberOneId_memberTwoId")   // to ensure that we can have only one conversation with the 2 exact same memberIDs
 }
 
 

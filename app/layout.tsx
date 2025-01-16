@@ -33,7 +33,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession(authOptions); // Fetch session on server
+  // const session = await getServerSession(authOptions); // Fetch session on server
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -42,23 +42,23 @@ export default async function RootLayout({
           "bg-white dark:bg-[#313338]"
         )}`}
       >
-        <ReduxProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem={false}
-            storageKey="discord-theme"
-          >
-            <SocketProvider>
-              <ModalProvider />
-              <AuthWrapper session={session}>
-                <AuthLoader>
+        <AuthWrapper>
+          <ReduxProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem={false}
+              storageKey="discord-theme"
+            >
+              <SocketProvider>
+                <ModalProvider />
+                {/* <AuthLoader> */}
                 <QueryProvider>{children}</QueryProvider>
-                </AuthLoader>
-              </AuthWrapper>
-            </SocketProvider>
-          </ThemeProvider>
-        </ReduxProvider>
+                {/* </AuthLoader> */}
+              </SocketProvider>
+            </ThemeProvider>
+          </ReduxProvider>
+        </AuthWrapper>
       </body>
     </html>
   );

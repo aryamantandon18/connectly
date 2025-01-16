@@ -1,8 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-
-import { io as ClientIO } from "socket.io-client";
+import { io as ClientIO,Socket } from "socket.io-client";
 
 type SocketContextType = {
   socket: any | null;
@@ -17,29 +16,37 @@ const SocketContext = createContext<SocketContextType>({
 export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const [socket, setSocket] = useState<any | null>(null);
+  const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
-  // useEffect(() => {
-  //   const socket = new (ClientIO as any)(process.env.NEXT_PUBLIC_SITE_URL!, {
-  //     path: "/api/socket/io",
-  //   //   @ts-ignore
-  //     addTrailingSlash: false,
-  //   });
-  //   setSocket(socket);
+  useEffect(() => {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-  //   socket.on("connect", () => {
-  //     setIsConnected(true);
-  //   });
+    const socketInstance = ClientIO(siteUrl, {
+      path: "/api/socket/io",
+      addTrailingSlash: false,  
+    });
 
-  //   socket.on("disconnect", () => {
-  //     setIsConnected(false);
-  //   });
+    setSocket(socketInstance);
 
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
+    socketInstance.on("connect", () => {
+      console.log("Connected to Socket.IO server");
+      setIsConnected(true);
+    });
+
+    socketInstance.on("disconnect", () => {
+      console.log(" Disconnected from Socket.IO server");
+      setIsConnected(false);
+    });
+
+    socketInstance.on("connect_error", (err) => {
+      console.error("Connection error:", err.message);
+    });
+
+    return () => {
+      socketInstance.disconnect();
+    };
+  }, []);
 
   return (
     <SocketContext.Provider value={{ socket, isConnected }}>

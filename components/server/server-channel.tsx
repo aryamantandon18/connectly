@@ -36,7 +36,7 @@ export const ServerChannel: React.FC<ServerChannelProps> = ({
   };
 
   const onAction = (e: React.MouseEvent, action: ModalType) => {
-    e.stopPropagation();
+    e.stopPropagation();   // so that the global funtion onClick does not triggered on clicking on edit icon
     dispatch(openModal({type:action,data:{server,channel}}))
   };
 

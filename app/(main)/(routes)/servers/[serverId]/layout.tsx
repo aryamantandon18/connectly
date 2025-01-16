@@ -5,16 +5,17 @@ import { redirect } from "next/navigation";
 
 interface ServerIdLayoutProps {
   children: React.ReactNode;
-  params: {
+  params: Promise<{
     serverId: string;
-  };
+  }>
 }
 
 const ServerIdLayout: React.FC<ServerIdLayoutProps> = async ({
   children,
-  params: { serverId },
+  params,
 }) => {
   const profile = await currentProfile();
+  const {serverId} = await params;
 
   if (!profile) return redirect("/login");
 

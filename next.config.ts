@@ -10,6 +10,18 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // async headers(){
+  //   return [
+  //     {
+  //       source: '/api/socket',
+  //       headers: [
+  //         { key: 'Connection', value: 'Upgrade' },
+  //         { key: 'Upgrade', value: 'websocket' },
+  //         { key: 'Cache-Control', value: 'no-store' }, // Prevent caching of WebSocket connections
+  //       ],
+  //     },
+  //   ];
+  // },
   /* if we want browser caching , it is now uncached bydefault in nextjs 15 unlike nextjs 14*/
   // experimental:{
   //   staleTimes:{

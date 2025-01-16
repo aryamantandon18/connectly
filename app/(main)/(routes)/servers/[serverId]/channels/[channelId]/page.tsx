@@ -20,15 +20,16 @@ const ChannelId = async ({params}:ChannelIdProps) => {
 
   if (!profile) return redirect('/login');
 
-  const channel = await db.channel.findFirst({
+  const channel = await db.channel.findUnique({
     where: { id: channelId },
   });
 
   const member = await db.member.findFirst({
-    where: { profileId: profile.id, serverId },
+    where: {serverId, profileId: profile.id },
   });
 
   if (!channel || !member) return redirect("/");
+
 
   return (
     <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
@@ -38,7 +39,7 @@ const ChannelId = async ({params}:ChannelIdProps) => {
         type="channel"
       />
 
-      {/* {channel.type === ChannelType.TEXT && (
+      {channel.type === ChannelType.TEXT && (
         <>
           <ChatMessages
             name={channel.name}
@@ -64,7 +65,7 @@ const ChannelId = async ({params}:ChannelIdProps) => {
             type="channel"
           />
         </>
-      )} */}
+      )}
       
       {channel.type === ChannelType.AUDIO && (
         <MediaRoom audio={true} video={false} chatId={channel.id} />

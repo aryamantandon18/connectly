@@ -49,11 +49,11 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         query,
       });
 
-      await axios.post(url, values);
+      await axios.post(url, values,{withCredentials:true});
 
       form.reset();
     } catch (error) {
-      console.log(error);
+      console.log("Line 56 ",error);
     }
   };
 
@@ -67,7 +67,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             <FormItem>
               <FormControl>
                 <div className="relative p-5 pb-6">
-                  <button
+                  <button           // so that it does not get triggered when we press enter
                     type="button"
                     onClick={() => dispatch(openModal({ type:"messageFile",data:{ apiUrl, query} }))}
                     className="absolute top-7 left-8 h-[24] w-[24] bg-zinc-500 dark:bg-zinc-400 hover:bg-zinc-600 dark:hover:bg-zinc-300 transition rounded-full p-1 flex items-center justify-center"
@@ -77,9 +77,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                   <Input
                     disabled={isLoading}
                     className="px-14 py-6 bg-zinc-200/90 dark:bg-zinc-700/75 border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200"
-                    placeholder={`Message ${
-                      type === "conversation" ? '' : "#"
-                    }${name}`}
+                    placeholder={`Message ${type === "conversation" ? '' : "#"}${name}`}
                     {...field}
                   />
                   <div className="absolute top-8 right-8">

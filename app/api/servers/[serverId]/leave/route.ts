@@ -17,7 +17,7 @@ export async function PATCH(req:Request,{params}:{params:{serverId:string}}){
                     not: profile.id,                     // Ensures the current user is not the owner of the server.
                 },
                 members:{
-                    some:{profileId:profile.id}            // Ensures the user is currently a member of the server.
+                    some:{profileId:profile.id}            // Ensures the user is currently a member of the server. so that only members can leave the server.
                 },
             },
             data:{
@@ -33,3 +33,16 @@ export async function PATCH(req:Request,{params}:{params:{serverId:string}}){
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }
+
+const server = db.server.update({
+    where:{id:serverId , profildId:profile.id,
+        members:{
+            some:{
+                profileId:profile.id ,
+            }
+        }
+    },
+    data:{
+
+    }
+})

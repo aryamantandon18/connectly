@@ -1,0 +1,16 @@
+// we have 3 roles Admin , Moderator & Guests
+admin can change the role of other users except itself
+admin can remove other users from server
+admin can delete the server only when there is no other member in the server
+other peoples can join the existing server using the invite link & they only have the option of Leave server unlike 
+admin which has these options : invite people , server setting, Manage members Create Channel, Delete server
+only admin and moderator can create channels
+moderator can invite people , create channel & Leave Server
+
+- Profile and Member has one to many relation
+socketQuery is an object containing channelId and serverId
+Form -> form -> <FormField control={form.control} render ={ ({field})=>( ... )} }> -> FormItem -> FormControl -> Input(shadCN)
+
+
+
+

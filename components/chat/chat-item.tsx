@@ -61,6 +61,11 @@ export const ChatItem: React.FC<ChatItemProps> = ({
   const params = useParams();
   const router = useRouter();
   const dispatch = useDispatch();
+  const [isMounted,setIsMounted] = useState(false);
+
+  useEffect(()=>{
+    setIsMounted(true);
+  },[]);
 
   const onMemberClick = () => {
 
@@ -96,7 +101,7 @@ export const ChatItem: React.FC<ChatItemProps> = ({
         url: `${socketUrl}/${id}`,
         query: socketQuery,
       });
-      await axios.patch(url, values);
+      await axios.patch(url, values,{withCredentials:true});
       setIsEditing(false);
       form.reset();
     } catch (error) {
@@ -120,12 +125,12 @@ export const ChatItem: React.FC<ChatItemProps> = ({
   const isPDF = fileType === "pdf" && fileUrl;
   const isImage = !isPDF && fileUrl;
 
-
+  if(!isMounted) return null;
   return (
     <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
       <div className="group flex gap-x-2 items-start w-full">
         <div onClick={onMemberClick} className="cursor-pointer hover:drop-shadow-md transition">
-          <UserAvtar src={member?.profile?.imageUrl} />
+          <UserAvtar src={member?.profile?.imageUrl || ""} />
         </div>
         <div className="flex flex-col w-full">
           <div className="flex items-center gap-x-2">

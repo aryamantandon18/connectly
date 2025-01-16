@@ -9,7 +9,7 @@ export async function GET(req:Request){
         const profile = await currentProfile();
         const {searchParams} = new URL(req.url);
 
-        const cursor = searchParams.get("cursor");
+        const cursor = searchParams.get("cursor");     // cursor tells the infinity load that what messages to load to next batch of messages , it is a conventional method for infinite loading
         const channelId = searchParams.get("channelId");
 
         if(!profile) return new NextResponse("UnAuthorized", { status: 401 })
@@ -20,7 +20,7 @@ export async function GET(req:Request){
             messages = await db.message.findMany({
                 take: MSG_BATCH,
                 skip:1,
-                cursor:{id:cursor},
+                cursor:{id:cursor},     // cursor is buildin in prisma
                 where:{id:channelId},
                 include:{member:{include:{profile:true}}},
                 orderBy:{createdAt: "desc"},
@@ -35,6 +35,7 @@ export async function GET(req:Request){
         }
 
         let nextCursor = null;
+        // in case when tha messages.length < MSG_BATCH , it indicate the tanstack the we have reached the end & there is no need to change the value of nextCursor
         if(messages.length === MSG_BATCH){
             nextCursor = messages[messages.length - 1].id;
         }

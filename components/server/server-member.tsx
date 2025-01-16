@@ -40,7 +40,7 @@ export const ServerMember: React.FC<ServerMemberProps> = ({
       )}
     >
       <UserAvtar
-        src={member?.profile?.imageUrl}
+        src={member?.profile?.imageUrl || ""}
         className="h-8 w-8 md:h-8 md:w-8"
       />
 

@@ -41,7 +41,7 @@ export const UserAvatar = () => {
         <Button variant="ghost" className="p-0">
           <Avatar className="w-12 h-12">
             {/* <AvatarImage src={session.user.image} alt={session.user.name} /> */}
-            <AvatarFallback className="text-lg uppercase">{session?.user.profile.name.charAt(0)}</AvatarFallback>
+            <AvatarFallback className="text-lg uppercase">{session?.user?.name.charAt(0)}</AvatarFallback>
           </Avatar>
         </Button>
       </PopoverTrigger>
@@ -50,10 +50,10 @@ export const UserAvatar = () => {
         <div className="flex items-center space-x-4">
           <Avatar className="w-16 h-16">
             {/* <AvatarImage src={session.user.image} alt={session.user.name} /> */}
-            <AvatarFallback className="text-lg uppercase ">{session?.user.profile.name.charAt(0)}</AvatarFallback>
+            <AvatarFallback className="text-lg uppercase ">{session?.user?.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="space-y-1">
-            <p className="text-lg font-semibold text-primary">{session?.user.profile.name}</p>
+            <p className="text-lg font-semibold text-primary">{session?.user.name}</p>
           </div>
         </div>
         <div>

@@ -18,7 +18,7 @@ import { NextResponse } from "next/server";
  * of the default "general" channel.
  */
 
-export async function DELETE(
+export async function DELETE(      // delete channel from server-sidebar
   req: Request,
   { params }: { params: { channelId: string } }
 ) {
@@ -88,7 +88,7 @@ export async function DELETE(
  * This ensures that only authorized users can update channels while protecting 
  * the integrity of the default "general" channel.
  */
-export async function PATCH(
+export async function PATCH(         // edit channel from server-sidebar
   req: Request,
   { params }: { params: { channelId: string } }
 ) {

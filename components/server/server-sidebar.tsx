@@ -1,10 +1,10 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { ChannelType, MemberRole } from "@prisma/client";
-import { Separator } from "@radix-ui/react-dropdown-menu";
+import { Separator } from "@/components/ui/separator";
 import { redirect } from "next/navigation";
 import ServerHeader from "./server-header";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ServerSearch } from "./server-search";
 import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
 import { ServerSection } from "./server-section";
@@ -66,7 +66,7 @@ export const ServerSidebar = async({serverId}:ServerSidebarProps)=>{
       );
     
       const members = server.members.filter(
-        (member) => member.profileId !== profile.id
+        (member) => member.profileId !== profile.id    // showing members except yourself in server-search
       );
     
       const role = server.members.find(
@@ -90,7 +90,7 @@ export const ServerSidebar = async({serverId}:ServerSidebarProps)=>{
                   })),
                 },
                 {
-                  label: "Voice Channels",
+                  label: "Audio Channels",
                   type: "channel",
                   data: audioChannels?.map((channel) => ({
                     icon: iconMap[channel.type],
@@ -121,6 +121,7 @@ export const ServerSidebar = async({serverId}:ServerSidebarProps)=>{
           </div>
   
           <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded-md my-2" />
+    {/* Converting into boolean ,ie: if length is +ve then show the text channels otherwise return false */}
           {!!textChannels?.length && (
             <div className="mb-2">
               <ServerSection
