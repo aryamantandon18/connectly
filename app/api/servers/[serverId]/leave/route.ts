@@ -33,16 +33,3 @@ export async function PATCH(req:Request,{params}:{params:{serverId:string}}){
         return new NextResponse("Internal Server Error", { status: 500 });
     }
 }
-
-const server = db.server.update({
-    where:{id:serverId , profildId:profile.id,
-        members:{
-            some:{
-                profileId:profile.id ,
-            }
-        }
-    },
-    data:{
-
-    }
-})
