@@ -35,7 +35,7 @@ const createNewConversation = async(memberOneId:string,memberTwoId:string) =>{
                 memberTwo:{include:{profile:true}},
             }
         })
-    } catch (error) {
+    } catch{
         return null;
     }
 }

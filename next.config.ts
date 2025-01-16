@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  eslint: {
+    ignoreDuringBuilds: false, // Treats lint errors as critical
+  },
   images: {
     remotePatterns: [
       {
