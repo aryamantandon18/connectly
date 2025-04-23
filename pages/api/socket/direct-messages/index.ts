@@ -1,7 +1,14 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { NextApiResponseServerIo } from "@/types";
-import { NextApiRequest } from "next";
+import { NextApiRequest,NextApiResponse } from "next";
+
+
+// export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+//   console.log("API loaded - direct-messages/index.ts");
+//   console.log("✅ Handler hit");
+//   return res.status(200).json({ message: "OK" });
+// }
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,11 +18,14 @@ export default async function handler(
     return res.status(405).json({ message: "Method not allowed" });
 
   try {
+    console.log("Line 14................... ")
     const profile = await currentProfile();
+    console.log("Current profile:", profile);
     const { content, fileUrl } = req.body;
-
+    
     const { conversationId } = req.query;
-
+    
+    console.log("Req Body -> ",req.body + req.query);
     if (!profile) return res.status(401).json({ message: "Unauthorized" });
     if (!conversationId)
       return res.status(400).json({ message: "Conversation id is required" });

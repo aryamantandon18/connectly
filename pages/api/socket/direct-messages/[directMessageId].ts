@@ -12,7 +12,7 @@ export default async function handler(
     return res.status(405).json({ message: "Method not allowed" });
 
   try {
-    const profile = await currentProfilePage(req);
+    const profile = await currentProfilePage(req,res);
 
     const { directMessageId, conversationId } = req.query;
     const { content } = req.body;

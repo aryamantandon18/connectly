@@ -48,7 +48,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         url: apiUrl,
         query,
       });
-
+      console.log("Line 51 ",url);
+      console.log("Line 52 ",query);
       await axios.post(url, values,{withCredentials:true});
 
       form.reset();
