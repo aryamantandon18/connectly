@@ -22,17 +22,23 @@ export const MediaRoom: React.FC<MediaRoomProps> = ({
   const [token, setToken] = useState("");
 
   useEffect(() => {
+    // console.log("Line 25 : ",session);
     if (!session?.user?.name) return;
 
     const name = `${session?.user?.name}`;
+    // console.log("Line 29 :",name);
 
     (async () => {
       try {
+        console.log("Line 32 : ");
         const response = await fetch(
           `/api/livekit?room=${chatId}&username=${name}`
         );
         const data = await response.json();
-        setToken(data.token);
+        // console.log("Line 38 : ",JSON.parse(data.token));
+        console.log("Token from API:", data.token);
+        console.log("Type of token:", typeof data.token);
+        setToken(String(data.token));
       } catch (error) {
         console.log(error);
       }

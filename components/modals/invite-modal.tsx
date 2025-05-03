@@ -25,7 +25,7 @@ const InviteModal = () => {
   const origin = useOrigin();
 
   const isModalOpen = isOpen && type === "invite";
-  console.log("Line 28 ",isModalOpen);
+  // console.log("Line 28 ",isModalOpen);
 
   const { server } = data;
 

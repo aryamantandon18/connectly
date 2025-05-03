@@ -1,4 +1,5 @@
 import { currentProfile } from "@/lib/current-profile";
+import { currentProfilePage } from "@/lib/current-profile-page";
 import { db } from "@/lib/db";
 import { NextApiResponseServerIo } from "@/types";
 import { NextApiRequest,NextApiResponse } from "next";
@@ -19,7 +20,7 @@ export default async function handler(
 
   try {
     console.log("Line 14................... ")
-    const profile = await currentProfile();
+    const profile = await currentProfilePage(req,res);
     console.log("Current profile:", profile);
     const { content, fileUrl } = req.body;
     

@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth";
 export async function currentProfile() {
   const session = await getServerSession(authOptions);
 
-  console.log("Line 8",session);
+  // console.log("Line 8",session);
   if (!session?.user?.id) {
     return null;
   }
