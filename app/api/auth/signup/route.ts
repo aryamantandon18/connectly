@@ -41,7 +41,7 @@ function generateProfileImage(initial: string,userIdentifier: string): Buffer {
 export async function POST(req: Request) {
   try {
     // Parse the request body
-    console.log("Hello 123");
+    // console.log("Hello 123");
     const { name, email, password } = await req.json();
     const exist = await db.user.findUnique({
       where: { email }, 

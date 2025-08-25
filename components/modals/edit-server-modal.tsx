@@ -64,7 +64,7 @@ const EditServerModal = () => {
       form.setValue("name", server.name);
       form.setValue("imageUrl", server.imageUrl);
     }
-    console.log("Line 66 ",server);
+    // console.log("Line 66 ",server);
   }, [server, form]);
 
   const isLoading = form.formState.isSubmitting;
@@ -85,96 +85,125 @@ const EditServerModal = () => {
   };
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={handleModalClose}>
-      <DialogContent className="bg-white text-black p-0 overflow-hidden">
-        <DialogHeader className="pt-8 px-6">
-          <DialogTitle className="text-2xl text-center font-bold">
-            Customize Your Server
-          </DialogTitle>
-          <DialogDescription className="text-center text-zinc-500">
-            Give your new server a personality with a name and an icon. You can
-            always change it later.
-          </DialogDescription>
-        </DialogHeader>
+<Dialog open={isModalOpen} onOpenChange={handleModalClose}>
+  <DialogContent className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-0 overflow-hidden rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 max-w-md w-full">
+    <DialogHeader className="pt-8 px-6">
+      <DialogTitle className="text-2xl text-center font-bold">
+        Customize Your Server
+      </DialogTitle>
+      <DialogDescription className="text-center text-gray-500 dark:text-gray-400">
+        Give your new server a personality with a name and an icon. You can
+        always change it later.
+      </DialogDescription>
+    </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className="space-y-8 px-6">
-              <div>
-                <FormField
-                  control={form.control}
-                  name="imageUrl"
-                  render={({ field }) => (
-                    <div>
-                      {field.value ? (
-                        <div className="relative w-[50%] h-[50%] m-auto mt-3">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="space-y-6 px-6">
+          <div>
+            <FormField
+              control={form.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <div>
+                  {field.value ? (
+                    <div className="relative w-full flex justify-center mt-3">
+                      <div className="relative w-48 h-48 rounded-lg overflow-hidden border-2 border-dashed border-gray-300 dark:border-gray-600">
                         <Image
                           src={preview? preview : field.value}
                           alt="Selected preview"
-                          className="object-cover rounded-lg "
+                          className="object-cover w-full h-full"
+                          width={400}
+                          height={400}
                         />
                         <button
-                          className="absolute -top-2 -right-2 bg-white rounded-full shadow-md hover:bg-gray-200 transition"
+                          className="absolute -top-2 -right-2 bg-white dark:bg-gray-800 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-700 transition p-1"
                           onClick={()=>{
                             field.onChange(null);
                             setPreview(null)
                           }}
                         >
-                          <IoCloseCircle className="w-6 h-6 text-red-500"/>
+                          <IoCloseCircle className="w-5 h-5 text-red-500"/>
                         </button>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center justify-center w-[60%] h-[120px] md:h-[240px] bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg m-auto mt-2 mx-auto hover:bg-gray-300 cursor-pointer transition duration-100 delay-75">
-                        <label className="flex flex-col items-center justify-center cursor-pointer text-gray-600">
-                          <FaCloudUploadAlt className="h-8 w-8 md:h-16 md:w-16 text-gray-600 mb-2 animate-float" />
-                          <span className="text-sm hover:underline underline-offset-1">Upload Image</span>
-                          <input
-                            type="file"
-                            className="hidden"
-                            accept="image/*"
-                            onChange={(e) => {
-                              if (e.target.files && e.target.files[0]) {
-                                const file = e.target.files[0];
-                                field.onChange(file); // Set file to form
-                                setPreview(URL.createObjectURL(file)); // Set preview
-                              }
-                            }}
-                          />
-                        </label>
-                        </div>
-                      )}
+                      </div>
                     </div>
-                  )}
-                />
-              </div>
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
-                      Server Name
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter a server name"
-                        className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
-                        disabled={isLoading}
-                        {...field}
+                  ) : (
+                    <label className="flex flex-col items-center justify-center w-full h-48 bg-gray-100 dark:bg-gray-800 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg m-auto mt-3 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer transition-colors">
+                      <FaCloudUploadAlt className="h-10 w-10 text-gray-500 dark:text-gray-400 mb-3" />
+                      <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">Upload Image</span>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">PNG, JPG up to 5MB</p>
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files[0]) {
+                            const file = e.target.files[0];
+                            field.onChange(file); // Set file to form
+                            setPreview(URL.createObjectURL(file)); // Set preview
+                          }
+                        }}
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <DialogFooter className="flex bg-gray-100 px-6 py-4">
-              <Button variant="primary" className="w-full" >Save</Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+                    </label>
+                  )}
+                </div>
+              )}
+            />
+          </div>
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-700 dark:text-gray-300 font-medium">
+                  Server Name
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter a server name"
+                    className="bg-white dark:bg-gray-800 
+                    text-gray-900 dark:text-gray-100 
+                    border border-gray-300 dark:border-gray-600 
+                    placeholder-gray-500 dark:placeholder-gray-400 
+                    focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
+                    focus:border-transparent transition-colors"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-red-500 dark:text-red-400 text-xs" />
+              </FormItem>
+            )}
+          />
+        </div>
+        <DialogFooter className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 px-6 py-4">
+          <Button 
+            type="button" 
+            variant="ghost" 
+            onClick={handleModalClose}
+            disabled={isLoading}
+            className="text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+          >
+            Cancel
+          </Button>
+          <Button 
+            type="submit" 
+            variant="primary" 
+            disabled={isLoading}
+            className="min-w-24"
+          >
+            {isLoading ? (
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Saving...
+              </div>
+            ) : "Save"}
+          </Button>
+        </DialogFooter>
+      </form>
+    </Form>
+  </DialogContent>
+</Dialog>
   );
 };
 

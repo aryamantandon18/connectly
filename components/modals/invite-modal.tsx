@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -56,41 +57,68 @@ const InviteModal = () => {
   };
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={()=>dispatch(closeModal())}>
-      <DialogContent className="bg-white text-black p-0 overflow-hidden">
-        <DialogHeader className="pt-8 px-6">
-          <DialogTitle className="text-2xl text-center font-bold">
-            Invite Friends
-          </DialogTitle>
-        </DialogHeader>
-        <div className="p-6">
-          <Label className="uppercase text-sm font-bold text-zinc-500 dark:text-secondary/70">
-            Server invite link
-          </Label>
-          <div className="flex items-center mt-2 gap-x-2">
-            <Input
-              disabled={isLoading}
-              className="bg-zinc-300/50 bottom-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
-              value={inviteUrl}
-              readOnly
-            />
-            <Button size="icon" onClick={onCopy} disabled={isLoading}>
-              {copied ? (<Check className="w-4 h-4" />) : (<Copy className="w-4 h-4" />) }
-            </Button>
-          </div>
-          <Button
-            variant="link"
-            size="sm"
-            className="text-xs text-zinc-500 mt-4"
-            disabled={isLoading}
-            onClick={onNew}
-          >
-            Generate a new link
-            <RefreshCw className="w-4 h-4 ml-1" />
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+<Dialog open={isModalOpen} onOpenChange={() => dispatch(closeModal())}>
+  <DialogContent className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-0 overflow-hidden rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 max-w-md w-full">
+    <DialogHeader className="pt-8 px-6">
+      <DialogTitle className="text-2xl text-center font-bold">
+        Invite Friends
+      </DialogTitle>
+      <DialogDescription className="text-center text-gray-500 dark:text-gray-400">
+        Invite friends to your server with a unique link
+      </DialogDescription>
+    </DialogHeader>
+    <div className="p-6">
+      <Label className="text-gray-700 dark:text-gray-300 font-medium">
+        Server invite link
+      </Label>
+      <div className="flex items-center mt-2 gap-x-2">
+        <Input
+          disabled={isLoading}
+          className="bg-white dark:bg-gray-800 
+          text-gray-900 dark:text-gray-100 
+          border border-gray-300 dark:border-gray-600 
+          focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
+          focus:border-transparent transition-colors"
+          value={inviteUrl}
+          readOnly
+        />
+        <Button 
+          size="icon" 
+          onClick={onCopy} 
+          disabled={isLoading}
+          className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+        >
+          {copied ? (
+            <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+          ) : (
+            <Copy className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+          )}
+        </Button>
+      </div>
+      <Button
+        variant="link"
+        size="sm"
+        className="text-xs text-gray-500 dark:text-gray-400 mt-4 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+        disabled={isLoading}
+        onClick={onNew}
+      >
+        Generate a new link
+        <RefreshCw className="w-4 h-4 ml-1" />
+      </Button>
+    </div>
+    <DialogFooter className="flex justify-end items-center bg-gray-100 dark:bg-gray-800 px-6 py-4">
+      <Button 
+        type="button" 
+        variant="ghost" 
+        onClick={() => dispatch(closeModal())}
+        disabled={isLoading}
+        className="text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+      >
+        Close
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
   );
 };
 

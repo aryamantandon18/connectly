@@ -24,3 +24,46 @@ npx prisma db push  // this will remove all the existing data from db
 - ml-auto se element bilkul right m chla jata h 
 - each icon has w-4 h-4 
 - shadCN sheet is used as drawer 
+
+we have to run npx prisma generate everytime we update our schema so that our code will have the latest schema object types , this command has nothing related to db
+it is "prisma migrate dev" command which maps these objects to the db table 
+
+-- we have two types of attributes 1). Field level attribute (which starts with @ (@id,@unique)) 
+                                   2). Mode
+                                   l level attribute
+                                    @@id([profileId, serverId]) // composite primary key or
+@@id([field1, ...])	        Composite primary key
+@@unique([field1, ...])	    Composite unique constraint
+@@map("table_name")	        Rename model/table in the database
+@@index([field1, ...])	    Add an index on one or more fields
+@@fulltext([field1, ...])	Full-text search index (MySQL & PostgreSQL)
+@@check(...)	            Add a check constraint
+@@ignore	                Ignore this model in Prisma Client generation
+
+---field level
+@id	Primary key
+@default(...)	Default value for the field
+@unique	Unique constraint
+@updatedAt	Auto-update timestamp (on DateTime)
+@map("column_name")	Rename field in the DB
+@relation(...)	Define relations between models
+@ignore	Ignore field in generated client
+@db.VarChar(255)	Set native DB type (SQL)
+@default(uuid())	Auto-generate UUID
+@default(auto())	Auto-increment for Int (used in PostgreSQL/SQL Server)
+
+-- @relation options
+@relation(fields: [foreignKey], references: [id], onDelete: Cascade|SetNull|Restrict)
+fields  -> Local foreign key(s)
+references   -> Referenced key(s)
+onDelete     -> Cascade, SetNull, Restrict
+onUpdate     -> Cascade, SetNull, Restrict
+map	     -> Name the foreign key constraint in DB
+
+---- @default values
+@default("string")
+@default(42)
+@default(true)
+@default(now())         // for DateTime
+@default(uuid())        // for String/UUID fields
+@default(auto())        // PostgreSQL auto-increment

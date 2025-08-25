@@ -81,7 +81,7 @@ const ServerHeader = ({ server, role }:ServerHeaderProps) => {
         {isAdmin && (
           <DropdownMenuItem
             className="text-rose-500 px-3 py-2 text-sm cursor-pointer"
-            onClick={() => dispatch(openModal({type:"deleteChannel",data:{server}}))}
+            onClick={() => dispatch(openModal({type:"deleteServer",data:{server}}))}
           >
             Delete Server
             <Trash className="h-4 w-4 ml-auto" />

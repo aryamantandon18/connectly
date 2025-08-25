@@ -28,9 +28,7 @@ const MemberIdPage = async({params,searchParams:{video}}:MemberIdPageProps) =>{
             serverId:params.serverId,
             profileId:profile.id,
         },
-        include:{
-            profile:true
-        }
+        include:{profile:true}
     })
 
     if(!currentMember){ return redirect("/"); }

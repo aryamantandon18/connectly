@@ -11,6 +11,7 @@ import { getServerSession } from "next-auth";
 import { ModalProvider } from "@/components/providers/modal-provider";
 import { SocketProvider } from "@/components/providers/socket-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { Toaster } from "react-hot-toast"; // ✅ Add this import
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -55,6 +56,7 @@ export default async function RootLayout({
                 {/* <AuthLoader> */}
                 <QueryProvider>{children}</QueryProvider>
                 {/* </AuthLoader> */}
+                <Toaster position="top-right" /> {/* ✅ Add this */}
               </SocketProvider>
             </ThemeProvider>
           </ReduxProvider>

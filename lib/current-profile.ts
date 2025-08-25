@@ -12,6 +12,9 @@ export async function currentProfile() {
 
   const profile = await db.profile.findUnique({
     where: { userId: session.user.id },
+    include:{
+      user:true,  
+    }
   });
 
   return profile;

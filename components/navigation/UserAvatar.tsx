@@ -1,33 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { FaUserEdit, FaCircle, FaSignOutAlt } from "react-icons/fa";
-import { MdOutlineDoNotDisturb, MdOutlineOnlinePrediction } from "react-icons/md";
+import { useEffect, useRef, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
+import {
+  MdOutlineOnlinePrediction,
+  MdOutlineDoNotDisturb,
+} from "react-icons/md";
 import { IoMdSunny, IoMdMoon } from "react-icons/io";
-import { cn } from "@/lib/utils";
-import { redirect } from "next/navigation";
-import { signOut, useSession } from "next-auth/react"; 
+import { FaUserEdit, FaSignOutAlt } from "react-icons/fa";
 
 export const UserAvatar = () => {
+  const [open, setOpen] = useState(false);
   const [userStatus, setUserStatus] = useState("Online");
   const { data: session } = useSession();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // if (status === "loading") {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (status === "unauthenticated") {
-  //   return <div>Please sign in</div>;
-  // }
-
-  if(!session?.user){
-    return null;
+  function handleClickOutside(event: MouseEvent) {
+      if ( dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) setOpen(false);
   }
+  useEffect(() => {
+      if (open) document.addEventListener("mousedown", handleClickOutside);
+      else document.removeEventListener("mousedown", handleClickOutside);
+
+      return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      };
+  }, [open]);
   const statusOptions = [
     { label: "Online", icon: MdOutlineOnlinePrediction, color: "text-green-500" },
     { label: "Idle", icon: IoMdSunny, color: "text-yellow-500" },
@@ -35,68 +33,80 @@ export const UserAvatar = () => {
     { label: "Invisible", icon: IoMdMoon, color: "text-gray-500" },
   ];
 
+  // If session is not ready or no user, render nothing
+  if (!session?.user) {
+    return <></>;
+  }
+
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="ghost" className="p-0">
-          <Avatar className="w-12 h-12">
-            {/* <AvatarImage src={session.user.image} alt={session.user.name} /> */}
-            <AvatarFallback className="text-lg uppercase">{session?.user?.name.charAt(0)}</AvatarFallback>
-          </Avatar>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-64 p-4 space-y-4 bg-white dark:bg-zinc-800 rounded-md shadow-lg">
-        {/* session.user Info */}
-        <div className="flex items-center space-x-4">
-          <Avatar className="w-16 h-16">
-            {/* <AvatarImage src={session.user.image} alt={session.user.name} /> */}
-            <AvatarFallback className="text-lg uppercase ">{session?.user?.name.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <div className="space-y-1">
-            <p className="text-lg font-semibold text-primary">{session?.user.name}</p>
+    <div className="relative" ref={dropdownRef}>
+      {/* Avatar Trigger */}
+      <button
+        onClick={() => {setOpen(!open); console.log("Line 30 Clicked",open)}}
+        className="w-10 h-10 rounded-full bg-gray-300 dark:bg-zinc-700 flex items-center justify-center hover:ring-2 ring-offset-2 ring-blue-500 transition"
+      >
+        <span className="text-md font-semibold text-white uppercase">
+          {session.user.name?.charAt(0)}
+        </span>
+      </button>
+
+      {/* Dropdown */}
+      {open && (
+        <div
+          className="absolute left-12 bottom-6 mt-3 w-72 bg-white dark:bg-zinc-800 shadow-xl rounded-xl p-4 space-y-4 animate-fade-in">
+          {/* User Info */}
+          <div className="flex items-center space-x-4">
+            <div className="w-14 h-14 bg-gray-300 dark:bg-zinc-700 rounded-full flex items-center justify-center text-xl font-bold uppercase text-white">
+              {session.user.name?.charAt(0)}
+            </div>
+            <div>
+              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                {session.user.name}
+              </p>
+            </div>
           </div>
-        </div>
-        <div>
-        <Button variant="outline" className="text-sm flex items-center gap-2">
-              <FaUserEdit className="text-gray-500" /> Edit Profile
-            </Button>
-        </div>
 
-        <Separator />
+          {/* Edit Profile */}
+          <button className="w-full flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-zinc-700 hover:bg-gray-200 dark:hover:bg-zinc-600 text-sm rounded-md transition">
+            <FaUserEdit />
+            Edit Profile
+          </button>
 
-        {/* Status Options */}
-        <div className="space-y-2">
-  <p className="text-sm font-medium text-muted-foreground">Set Status</p>
-  <Select onValueChange={(value) => setUserStatus(value)}>
-    <SelectTrigger className="w-full">
-      <SelectValue placeholder={userStatus} />
-    </SelectTrigger>
-    <SelectContent>
-      {statusOptions.map((option) => (
-        <SelectItem key={option.label} value={option.label} className="outline-none">
-          <div className="flex items-center gap-2">
-            <option.icon className={option.color} /> {option.label}
+          <div className="border-t border-gray-200 dark:border-zinc-600" />
+
+          {/* Status Selector */}
+          <div>
+            <p className="text-sm font-medium text-gray-500 mb-2">Set Status</p>
+            <div className="space-y-1">
+              {statusOptions.map((option) => (
+                <button
+                  key={option.label}
+                  onClick={() => setUserStatus(option.label)}
+                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm rounded-md transition ${
+                    userStatus === option.label
+                      ? "bg-gray-100 dark:bg-zinc-700"
+                      : "hover:bg-gray-100 dark:hover:bg-zinc-700"
+                  }`}
+                >
+                  <option.icon className={`${option.color}`} />
+                  {option.label}
+                </button>
+              ))}
+            </div>
           </div>
-        </SelectItem>
-      ))}
-    </SelectContent>
-  </Select>
-</div>
 
-<Separator />
+          <div className="border-t border-gray-200 dark:border-zinc-600" />
 
-{/* Logout Button */}
-<div>
-  <Button
-    variant="destructive"
-    className="w-full flex items-center gap-2 justify-center"
-    onClick={() => signOut()}
-  >
-    <FaSignOutAlt className="text-white" />
-    Logout
-  </Button>
-</div>
-      </PopoverContent>
-    </Popover>
+          {/* Logout */}
+          <button
+            onClick={() => signOut()}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+          >
+            <FaSignOutAlt />
+            Logout
+          </button>
+        </div>
+      )}
+    </div>
   );
 };

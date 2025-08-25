@@ -1,7 +1,8 @@
 import NextAuth,{ NextAuthOptions, Session } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { CustomPrismaAdapter } from "@/lib/custom-adapter";
 import { db } from "@/lib/db";
 import { JWT } from "next-auth/jwt";
 import bcryptjs from 'bcryptjs';
@@ -9,11 +10,15 @@ import { User } from "next-auth";
 
 
 export const authOptions:NextAuthOptions = {
-  adapter: PrismaAdapter(db),
+ adapter: CustomPrismaAdapter(),
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     CredentialsProvider({
       name: 'Credentials',
@@ -42,9 +47,7 @@ export const authOptions:NextAuthOptions = {
         if(!passwordMatch){
           throw new Error("Invalid credentials")
         }
-        // if(!user.emailVerified){
-        //   throw new Error("Email not verified")
-        // }
+
         return {
           id: user.id,
           email: user.email!,
@@ -68,10 +71,10 @@ export const authOptions:NextAuthOptions = {
   callbacks: {
     async session({ session, token, user }: { session: Session; token: JWT; user: any }) {
       if (token) {
-        session.user.id = token.id || ""; // Ensure id is set
-        session.user.email = token.email || "";
-        session.user.image = token.profile?.imageUrl || "";
-        session.user.name = token.profile?.name || "Unknown";
+        session.user.id = token.id!; // Ensure id is set
+        session.user.email = token.email!;
+        session.user.image = token.profile?.imageUrl ?? "";
+        session.user.name = token.profile?.name ?? "Unknown";
       }
 
       return session;
@@ -93,10 +96,7 @@ export const authOptions:NextAuthOptions = {
           name: userProfile?.name || "Unknown",
           imageUrl: userProfile?.imageUrl || "",
         };
-        token.accessToken = account.access_token
-      }
-      else if(account){
-        account.access_token = undefined;
+        token.accessToken = account?.access_token;
       }
       return token;
     },

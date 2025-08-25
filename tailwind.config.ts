@@ -63,12 +63,17 @@ export default {
   		},
 		  animation: {
 			float: 'float 2s ease-in-out infinite',
+			'fade-in' : 'fadeIn 0.2s ease-out',
 		  },
 		  keyframes: {
 			float: {
 			  '0%, 100%': { transform: 'translateY(0)' },
 			  '50%': { transform: 'translateY(-10px)' },
 			},
+			 fadeIn: {
+          	'0%': { opacity: '0', transform: 'scale(0.95)' },
+          	'100%': { opacity: '1', transform: 'scale(1)' },
+        },
 		}
   	}
   },

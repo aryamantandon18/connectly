@@ -28,30 +28,13 @@ export default async function handler(
       where: {
         id: conversationId as string,
         OR: [
-          {
-            memberOne: {
-              profileId: profile.id,
-            },
-          },
-          {
-            memberTwo: {
-              profileId: profile.id,
-            },
-          },
+          { memberOne: {profileId: profile.id}},
+          { memberTwo: {profileId: profile.id}},
         ],
       },
-
       include: {
-        memberOne: {
-          include: {
-            profile: true,
-          },
-        },
-        memberTwo: {
-          include: {
-            profile: true,
-          },
-        },
+        memberOne: {include: {profile: true}},
+        memberTwo: {include: {profile: true}}, 
       },
     });
 
@@ -71,11 +54,7 @@ export default async function handler(
         conversationId: conversation.id as string,
       },
       include: {
-        member: {
-          include: {
-            profile: true,
-          },
-        },
+        member: {include: {profile: true}}
       },
     });
 
@@ -100,11 +79,7 @@ export default async function handler(
           deleted: true,
         },
         include: {
-          member: {
-            include: {
-              profile: true,
-            },
-          },
+          member: {include: {profile: true}},
         },
       });
     }
@@ -115,17 +90,13 @@ export default async function handler(
 
       directMessage = await db.directMessage.update({
         where: {
-          id: directMessageId as string,
+          id: directMessageId as string
         },
         data: {
-          content,
+          content
         },
         include: {
-          member: {
-            include: {
-              profile: true,
-            },
-          },
+          member: {include: {profile: true}},
         },
       });
     }

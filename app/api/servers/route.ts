@@ -10,9 +10,9 @@ import cloudinary from "@/lib/cloudinary";
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
-    console.log("Line 13 ",formData);
+    // console.log("Line 13 ",formData);
     const imageFiles = formData.getAll('imageUrl') as File[];
-    console.log("Line 15 ", imageFiles);
+    // console.log("Line 15 ", imageFiles);
     const name = formData.get('name')?.toString();
 
     if (!name || imageFiles.length === 0) {

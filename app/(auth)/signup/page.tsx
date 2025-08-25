@@ -1,11 +1,14 @@
-"use client"
+"use client";
 
-import {z} from "zod";
+import { z } from "zod";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+import { signIn } from "next-auth/react";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 
 const signUpSchema = z.object({
   name: z.string().min(3, "Username must be at least 3 characters long"),
@@ -13,38 +16,44 @@ const signUpSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters long"),
 });
 
-
 export default function SignUpPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isLoading, setIsLoading] = useState(false); // 👈 for loader
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSignUp = (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       signUpSchema.parse(formData);
-      // Clear errors and submit data
       setErrors({});
-      axios.post("/api/auth/signup", formData, {
+      setIsLoading(true); // 👈 start loading
+
+      const response = await axios.post("/api/auth/signup", formData, {
         headers: { "Content-Type": "application/json" },
-      })
-      .then((res)=>{
-        if (res.status === 200) {
-          router.push("/login"); // Navigate to sign-in page
-        } else {
-          alert(res.data.message || "Sign-up failed");
-        }
-      })
-      .catch((err) => {
-        alert(err.response?.data?.message || "Sign-up failed");
       });
-    }  catch (err) {
-      // Handle validation errors
+      if (response.status == 200) {
+      // User created successfully, now sign in
+      const result = await signIn("credentials", {
+        redirect: true,
+        email: formData.email,
+        password: formData.password,
+        callbackUrl: "/", // or dashboard or wherever
+      });
+
+      if (result?.error) {
+        toast.error("Login failed");
+      }
+      toast.success("Sign up successful! Redirecting...");
+      router.push("/"); 
+    }
+  } catch (err: any) {
+      setIsLoading(false); // 👈 stop loading on error
+
       if (err instanceof z.ZodError) {
         const fieldErrors: { [key: string]: string } = {};
         err.errors.forEach((error) => {
@@ -53,11 +62,14 @@ export default function SignUpPage() {
           }
         });
         setErrors(fieldErrors);
+        toast.error("Please correct the highlighted fields.");
       } else {
-        alert("An unexpected error occurred. Please try again.");
+        const message = err?.response?.data?.message || "Sign-up failed.";
+        toast.error(message);
       }
     }
   };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-discord-dark text-white">
       <motion.div
@@ -111,18 +123,41 @@ export default function SignUpPage() {
               value={formData.password}
               onChange={handleChange}
             />
-             {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-discord-primary text-white rounded-lg hover:bg-indigo-600 transition duration-300"
+            disabled={isLoading}
+            className="w-full py-2 px-4 bg-discord-primary text-white rounded-lg hover:bg-indigo-600 transition duration-300 flex items-center justify-center"
           >
-            Sign Up
+            {isLoading ? (
+              <span className="loader border-white border-t-transparent border-2 w-5 h-5 rounded-full animate-spin" />
+            ) : (
+              "Sign Up"
+            )}
           </button>
         </form>
+        <div className="mt-6 space-y-3">
+          <button
+            onClick={() => signIn("google", { callbackUrl: "/" })}
+            type="button"
+            className="w-full py-2 px-4 bg-red-500 text-white rounded-lg hover:bg-red-600 transition flex items-center justify-center gap-2"
+          >
+            <FaGoogle size={20} />
+            Sign up with Google
+          </button>
+          <button
+            onClick={() => signIn("github", { callbackUrl: "/" })}
+            type="button"
+            className="w-full py-2 px-4 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition flex items-center justify-center gap-2"
+          >
+            <FaGithub size={20} />
+            Sign up with GitHub
+          </button>
+        </div>
         <p className="text-sm text-center mt-4">
           Already have an account?{" "}
-          <Link href="/auth/signin" className="text-discord-primary hover:underline">
+          <Link href="/login" className="text-discord-primary hover:underline">
             Sign In
           </Link>
         </p>

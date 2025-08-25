@@ -5,6 +5,7 @@ import { Member, MemberRole, Profile, Server } from "@prisma/client";
 import { ShieldAlert, ShieldCheck } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { UserAvtar } from "../user-avatar";
+import { useSocket } from "../providers/socket-provider";
 
 interface ServerMemberProps {
   member: Member & { profile: Profile };
@@ -26,6 +27,9 @@ export const ServerMember: React.FC<ServerMemberProps> = ({
   const params = useParams();
   const router = useRouter();
 
+  const {onlineUsers} = useSocket();
+  const isOnline = onlineUsers.includes(member?.profile?.userId);
+
   const icon = roleIconMap[member?.role];
 
   const onClick = () => {
@@ -39,11 +43,15 @@ export const ServerMember: React.FC<ServerMemberProps> = ({
         params?.memberId === member?.id && "bg-zinc-700/20 dark:bg-zinc-700"
       )}
     >
+      <div className="relative">
       <UserAvtar
         src={member?.profile?.imageUrl || ""}
         className="h-8 w-8 md:h-8 md:w-8"
       />
-
+      {isOnline && (
+        <span className="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full border border-white dark:border-black"></span>
+      )}
+      </div>
       <p
         className={cn(
           "font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition",

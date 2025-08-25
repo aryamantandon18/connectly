@@ -15,8 +15,8 @@ export default function AuthLoader({children}:{children:React.ReactNode}){
                 id:session.user.id,
                 email:session.user.email,
                 profile:{
-                    name:session.user.profile.name,
-                    image:session.user.profile.image,
+                    name:session.user.name,
+                    image:session.user.image,
                 }
             }))
         }

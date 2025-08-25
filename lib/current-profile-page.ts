@@ -5,7 +5,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function currentProfilePage(req:NextApiRequest,res:NextApiResponse) {
   const session = await getServerSession(req,res,authOptions);
-  console.log("Line 8", session);
+  // console.log("Line 8", session);
   if (!session?.user?.id) {
     return null;
   }

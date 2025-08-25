@@ -18,7 +18,7 @@ export const MediaRoom: React.FC<MediaRoomProps> = ({
   video,
   audio,
 }) => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [token, setToken] = useState("");
 
   useEffect(() => {
@@ -36,8 +36,8 @@ export const MediaRoom: React.FC<MediaRoomProps> = ({
         );
         const data = await response.json();
         // console.log("Line 38 : ",JSON.parse(data.token));
-        console.log("Token from API:", data.token);
-        console.log("Type of token:", typeof data.token);
+        // console.log("Token from API:", data.token);
+        // console.log("Type of token:", typeof data.token);
         setToken(String(data.token));
       } catch (error) {
         console.log(error);

@@ -7,7 +7,7 @@ interface ChatQueryProps {
   queryKey: string;
   apiUrl: string;
   paramKey: "channelId" | "conversationId";
-  paramValue: string;
+  paramValue: string;   //  ID of the channel or conversation.
 }
 
 export const useChatQuery = ({

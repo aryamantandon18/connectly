@@ -24,7 +24,7 @@ export async function PATCH(
                 profileId: profile.id,
             },
             data:{
-                inviteCode: uuidV4(),
+                inviteCode: uuidV4(),         // renew the invite code
             }
         })
         return NextResponse.json(server);

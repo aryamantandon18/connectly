@@ -123,7 +123,8 @@ export const ChatItem: React.FC<ChatItemProps> = ({
   const canDeleteMessage = !deleted && (isAdmin || isModerator || isOwner);
   const canEditMessage = !deleted && isOwner && !fileUrl;
   const isPDF = fileType === "pdf" && fileUrl;
-  const isImage = !isPDF && fileUrl;
+  const isVideo = fileType && /mp4|mov|webm|avi|mkv/i.test(fileType);
+const isImage = fileUrl && !isPDF && !isVideo; // only if not pdf or video
 
   if(!isMounted) return null;
   return (
@@ -146,34 +147,65 @@ export const ChatItem: React.FC<ChatItemProps> = ({
               {timestamp}
             </span>
           </div>
-          {isImage && (
-            <a
-              href={fileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative aspect-square rounded-md mt-2 overflow-hidden border flex items-center bg-secondary h-48 w-48"
-            >
-              <Image
-                src={fileUrl}
-                alt={content}
-                fill
-                className="object-cover"
-              />
-            </a>
-          )}
+         {isImage && (
+  <div className="mt-2">
+    <a
+      href={fileUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="relative aspect-square rounded-md overflow-hidden border flex items-center bg-secondary h-48 w-48"
+    >
+      <Image
+        src={fileUrl}
+        alt={content || "uploaded image"}
+        fill
+        className="object-cover"
+      />
+    </a>
+    {content && (
+      <p className="text-sm text-zinc-600 dark:text-zinc-300 mt-1">
+        {content}
+      </p>
+    )}
+  </div>
+)}
+
           {isPDF && (
-            <div className="relative flex items-center p-2 mt-2 rounded-md bg-background/10">
-              <FileIcon className="h-10 w-10 fill-indigo-200 stroke-indigo-400" />
-              <a
-                href={fileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-indigo-400 text-sm ml-2 dark:text-indigo-300 hover:underline"
-              >
-                PDF File
-              </a>
+            <div className="relative flex flex-col p-2 mt-2 rounded-md bg-background/10">
+              <div className="flex items-center">
+                <FileIcon className="h-10 w-10 fill-indigo-200 stroke-indigo-400" />
+                <a
+                  href={fileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-400 text-sm ml-2 dark:text-indigo-300 hover:underline"
+                >
+                  PDF File
+                </a>
+              </div>
+              {content && (
+                <p className="text-sm text-zinc-600 dark:text-zinc-300 mt-2">
+                  {content}
+                </p>
+              )}
             </div>
           )}
+
+        {isVideo && (
+          <div className="mt-2">
+            <video
+              controls
+              className="rounded-md border bg-black h-60 w-auto"
+              src={fileUrl!}
+            />
+            {content && (
+              <p className="text-sm text-zinc-600 dark:text-zinc-300 mt-1">
+                {content}
+              </p>
+            )}
+          </div>
+        )}
+
 
           {!fileUrl && !isEditing && (
             <p
